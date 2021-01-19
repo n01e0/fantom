@@ -44,20 +44,23 @@ fn parse_fanevent<T: Into<String>>(s: T) -> Result<FanEvent, FanEventParseError>
 }
 
 pub fn parse_options(args: &clap::ArgMatches) -> FantomOptions {
+    let mut paths = args
+        .values_of_lossy("target_path")
+        .unwrap_or(Vec::new())
+        .iter()
+        .map(|p| TargetPath::Path(p.to_string()))
+        .collect::<Vec<TargetPath>>();
+
+    let mut mountpoints = args
+        .values_of_lossy("target_mountpoint")
+        .unwrap_or(Vec::new())
+        .iter()
+        .map(|p| TargetPath::Mountpoint(p.to_string()))
+        .collect::<Vec<TargetPath>>();
+    paths.append(&mut mountpoints);
+
     FantomOptions {
-        target_path: if args.is_present("target_path") {
-            args.values_of_lossy("target_path")
-                .unwrap()
-                .iter()
-                .map(|p| TargetPath::Path(p.to_string()))
-                .collect::<Vec<TargetPath>>()
-        } else {
-            args.values_of_lossy("target_mountpoint")
-                .unwrap()
-                .iter()
-                .map(|p| TargetPath::Mountpoint(p.to_string()))
-                .collect::<Vec<TargetPath>>()
-        },
+        target_path: paths,
         monitor_events: args
             .values_of_lossy("monitor_events")
             .unwrap()
