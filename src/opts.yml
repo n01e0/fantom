@@ -57,3 +57,10 @@ args:
         long: mountpoint
         takes_value: true
         multiple: true
+
+groups:
+    - target:
+        required: true
+        args:
+            - target_path
+            - target_mountpoint

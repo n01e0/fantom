@@ -36,29 +36,34 @@ fn parse_fanevent<T: Into<String>>(s: T) -> Result<FanEvent, FanEventParseError>
         "move_self" => Ok(FanEvent::MoveSelf),
         "open" => Ok(FanEvent::Open),
         "open_exec" => Ok(FanEvent::OpenExec),
+        "open_perm" => Err(FanEventParseError::NotSupport),
+        "open_exec_perm" => Err(FanEventParseError::NotSupport),
+        "access_perm" => Err(FanEventParseError::NotSupport),
         _ => Err(FanEventParseError::ParseError),
     }
 }
 
 pub fn parse_options(args: &clap::ArgMatches) -> FantomOptions {
     FantomOptions {
-        target_path: 
-            if args.is_present("target_path") {
-                args.values_of_lossy("target_path")
-                    .unwrap()
-                    .iter()
-                    .map(|p| TargetPath::Path(p.to_string()))
-                    .collect::<Vec<TargetPath>>()
-            } else {
-                args.values_of_lossy("target_mountpoint")
-                    .unwrap()
-                    .iter()
-                    .map(|p| TargetPath::Mountpoint(p.to_string()))
-                    .collect::<Vec<TargetPath>>()
-            },
-        monitor_events:
-            args.values_of_lossy("monitor_events").unwrap().iter().map(|e| parse_fanevent(e).unwrap()).collect::<Vec<FanEvent>>(),
-        blocking:
-            args.is_present("blocking")
+        target_path: if args.is_present("target_path") {
+            args.values_of_lossy("target_path")
+                .unwrap()
+                .iter()
+                .map(|p| TargetPath::Path(p.to_string()))
+                .collect::<Vec<TargetPath>>()
+        } else {
+            args.values_of_lossy("target_mountpoint")
+                .unwrap()
+                .iter()
+                .map(|p| TargetPath::Mountpoint(p.to_string()))
+                .collect::<Vec<TargetPath>>()
+        },
+        monitor_events: args
+            .values_of_lossy("monitor_events")
+            .unwrap()
+            .iter()
+            .map(|e| parse_fanevent(e).unwrap())
+            .collect::<Vec<FanEvent>>(),
+        blocking: args.is_present("blocking"),
     }
 }
