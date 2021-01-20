@@ -22,7 +22,7 @@ pub enum FanEventParseError {
 }
 
 fn parse_fanevent<T: Into<String>>(s: T) -> Result<FanEvent, FanEventParseError> {
-    match &s.into()[..] {
+    match &s.into().to_lowercase()[..] {
         "access" => Ok(FanEvent::Access),
         "attrib" => Ok(FanEvent::Attrib),
         "close" => Ok(FanEvent::Close),

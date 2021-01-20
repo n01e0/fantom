@@ -29,6 +29,7 @@ args:
         required: true
         multiple: true
         takes_value: true
+        case_insensitive: true
         possible_values:
             - access
             - attrib
