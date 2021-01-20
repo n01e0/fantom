@@ -15,9 +15,7 @@ fn main() {
             println!("Ok: fan => {}", fan.as_raw_fd());
         }
         Err(e) => match e.kind() {
-            ErrorKind::PermissionDenied => {
-                eprintln!("You need CAP_SYS_ADMIN capability");
-            }
+            ErrorKind::PermissionDenied => eprintln!("You need CAP_SYS_ADMIN capability"),
             e => eprintln!("Error: {:?}", e),
         },
     }

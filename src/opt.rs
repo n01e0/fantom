@@ -92,11 +92,20 @@ impl FantomOptions {
             .fold(0, |flag, x| flag | *x as u64)
     }
 
-    fn create_fanotify(&self) -> Fanotify {
+    fn create_fanotify(&self) -> Result<Fanotify, std::io::Error> {
+        if !caps::has_cap(
+            None,
+            caps::CapSet::Permitted,
+            caps::Capability::CAP_SYS_ADMIN,
+        )
+        .unwrap()
+        {
+            return Err(ErrorKind::PermissionDenied.into());
+        }
         if self.blocking {
-            Fanotify::new_with_blocking(FanotifyMode::CONTENT)
+            Ok(Fanotify::new_with_blocking(FanotifyMode::CONTENT))
         } else {
-            Fanotify::new_with_nonblocking(FanotifyMode::CONTENT)
+            Ok(Fanotify::new_with_nonblocking(FanotifyMode::CONTENT))
         }
     }
 
@@ -131,7 +140,7 @@ impl FantomOptions {
     }
 
     pub fn apply(&self) -> Result<Fanotify, std::io::Error> {
-        let fan = self.create_fanotify();
+        let fan = self.create_fanotify()?;
         let mode = self.get_mode();
 
         self.add_target(&fan, mode)?;
