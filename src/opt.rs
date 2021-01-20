@@ -52,6 +52,9 @@ impl FantomOptions {
             .unwrap_or(Vec::new())
             .iter()
             .map(|p| {
+                if p == "/" {
+                    return path::PathBuf::from("");
+                }
                 path::Path::new(p).canonicalize().unwrap_or_else(|e| {
                     eprintln!("Error: \"{}\" {}", p, e);
                     std::process::exit(1);
@@ -65,6 +68,9 @@ impl FantomOptions {
             .unwrap_or(Vec::new())
             .iter()
             .map(|p| {
+                if p == "/" {
+                    return path::PathBuf::from("");
+                }
                 path::Path::new(p).canonicalize().unwrap_or_else(|e| {
                     eprintln!("Error: \"{}\" {}", p, e);
                     std::process::exit(1);
