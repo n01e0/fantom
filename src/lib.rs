@@ -1,1 +1,1 @@
-pub mod opts;
+pub mod opt;
