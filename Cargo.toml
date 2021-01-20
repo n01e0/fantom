@@ -18,5 +18,4 @@ description = """
 
 [dependencies]
 clap = { version = "2.33.3", features = ["yaml"] }
-daemonize = "0.4.1"
 fanotify-rs = { git = "https://github.com/n01e0/fanotify-rs" }
